@@ -2,3 +2,4 @@ __pycache__
 .idea
 *.mp4
 *.png
+*_simulation.cif
