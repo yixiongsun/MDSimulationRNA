@@ -34,4 +34,4 @@ An example usage of the command
 ```$ python run_simulation.py pdbs/1ivs.cif C 0.01 2000 10 gpu```
 
 ## Contact
-If you have any questions, please contact me at yixiong.sun@mail.mcgill.ca
+If you have any questions, please contact me at yixiong.sun@mail.mcgill.ca or create an issue in this repo.
