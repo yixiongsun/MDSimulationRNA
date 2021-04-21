@@ -76,7 +76,7 @@ for i in range(0, N):
             neighbours.append(j)
 
     neighbours_pairs = list(itertools.combinations(neighbours, 2))
-    if len(neighbours_pairs) > 1:
+    if len(neighbours_pairs) > 0:
         for neighbours in neighbours_pairs:
             a_i = pdb.atoms[i]
             a_j = pdb.atoms[neighbours[0]]
@@ -93,7 +93,6 @@ N_angles = np_angles.shape[0]
 
 
 angles = ti.Vector.field(5, dtype=ti.f32, shape=N_angles)
-# get positions from pdb
 pos = ti.Vector.field(3, dtype=ti.f32, shape=N, needs_grad=True)
 p = ti.Vector.field(6, dtype=ti.f32, shape=(N, N))
 force = ti.Vector.field(3, dtype=ti.f32, shape=N)
@@ -204,7 +203,7 @@ for i in range(0, N):
     vel[i] -= vcm
     vel[i] = vel[i] * scale
 
-v.from_numpy(vel)
+#v.from_numpy(vel)
 p.from_numpy(params)
 
 # calculate forces
@@ -291,7 +290,7 @@ def intramolecular_forces():
                 U[None] += kb * ((r_norm - b0) ** 2)
     # angle potential
 
-    
+
     for i in range(0, N_angles):
         ri = pos[int(angles[i][0])]
         rj = pos[int(angles[i][1])]
@@ -302,6 +301,8 @@ def intramolecular_forces():
         kthetha = angles[i][3]
         theta0 = pi * angles[i][4] / 180
         U[None] += kthetha * ((theta - theta0) ** 2)
+
+
 
 
 @ti.kernel
@@ -322,8 +323,8 @@ def velocity_verlet_velocities(h: ti.f32):
 def calculate_acceleration():
     for i in range(0, N):
         a_next[i][0] = (force[i][0] - pos.grad[i][0])/ mass[i]
-        a_next[i][1] = (force[i][1] - pos.grad[i][0])/ mass[i]
-        a_next[i][2] = (force[i][2] - pos.grad[i][0])/ mass[i]
+        a_next[i][1] = (force[i][1] - pos.grad[i][1])/ mass[i]
+        a_next[i][2] = (force[i][2] - pos.grad[i][2])/ mass[i]
         force[i][0] = 0
         force[i][1] = 0
         force[i][2] = 0
@@ -348,10 +349,11 @@ print("init finished")
 intermolecular_forces()
 with ti.Tape(U):
     intramolecular_forces()
+
 for i in range(0, N):
     a[i][0] = (force[i][0] - pos.grad[i][0]) / mass[i]
-    a[i][1] = (force[i][1] - pos.grad[i][0]) / mass[i]
-    a[i][2] = (force[i][2] - pos.grad[i][0]) / mass[i]
+    a[i][1] = (force[i][1] - pos.grad[i][1]) / mass[i]
+    a[i][2] = (force[i][2] - pos.grad[i][2]) / mass[i]
     force[i][0] = 0
     force[i][1] = 0
     force[i][2] = 0
