@@ -2,7 +2,7 @@
 COMP 559 Final Project
 
 ## Description
-This project is a simple Molecular dynamics simulation of RNA, coded in python and rendered with PyMol. Here is the youtube link for the video description:
+This project is a simple Molecular dynamics simulation of RNA, coded in python and rendered with PyMol. Here is the youtube link for the video description: https://www.youtube.com/watch?v=kaTLkjoZ7P0
 
 ## Installation
 Python3 is required to run the simulation program. We recommend using a virtual environment for managing python packages.
